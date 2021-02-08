@@ -10,7 +10,7 @@ module WebLogParser
         @logs_data = {}
       end
 
-      def push
+      def push(path, ip)
       end
 
       def top_unique_visitors
