@@ -22,7 +22,9 @@ module WebLogParser
       private
 
       def read_file(file)
-        file.each do |line, line_number|
+        line_number = 0
+        file.each do |line|
+          line_number += 1
           record_data = line.chomp.split(' ')
           next unless valid_line?(record_data, line_number)
 
