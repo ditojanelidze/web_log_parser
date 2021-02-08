@@ -4,13 +4,13 @@ require_relative '../lib/log_storage'
 require 'faker'
 
 RSpec.describe WebLogParser::Lib::LogStorage do
-  it 'should save new entry' do
+  it 'new entry' do
     storage = WebLogParser::Lib::LogStorage.new
     storage.push '/home', Faker::Internet.ip_v4_address
     expect(storage.instance_variable_get(:@logs_data).count).to eq 1
   end
 
-  it 'should save random amount of entries' do
+  it 'several requests for one page' do
     storage = WebLogParser::Lib::LogStorage.new
     n = rand(20)
     n.times { storage.push '/home', Faker::Internet.ip_v4_address }
@@ -20,7 +20,7 @@ RSpec.describe WebLogParser::Lib::LogStorage do
     expect(logs_data['/home'].requests_count).to eq n
   end
 
-  it 'should save new entry' do
+  it 'several url handling' do
     storage = WebLogParser::Lib::LogStorage.new
     storage.push '/home', Faker::Internet.ip_v4_address
     storage.push '/about', Faker::Internet.ip_v4_address

@@ -11,13 +11,16 @@ RSpec.describe WebLogParser::Lib::Parser do
       file_path= Faker::File.file_name
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
+
       allow(File).to receive(:exist?).and_return true
       allow(File).to receive(:open).and_return ["/some_url #{Faker::Internet.ip_v4_address}"]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
       cli_parser.parse
+
       storage = WebLogParser::Lib::LogStorage.new
       file_parser = WebLogParser::Lib::Parser.new(cli_parser.options, storage)
       file_parser.parse
+
       expect(storage.instance_variable_get(:@logs_data).empty?).to be false
     end
   end
@@ -27,13 +30,16 @@ RSpec.describe WebLogParser::Lib::Parser do
       file_path= Faker::File.file_name
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
-      cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+
       allow(File).to receive(:exist?).and_return true
       allow(File).to receive(:open).and_raise StandardError
+      cli_parser = WebLogParser::Cli::Option::Parser.new(args)
       cli_parser.parse
+
       storage = WebLogParser::Lib::LogStorage.new
       file_parser = WebLogParser::Lib::Parser.new(cli_parser.options, storage)
       file_parser.parse
+
       expect(storage.instance_variable_get(:@logs_data).empty?).to be true
     end
 
@@ -41,14 +47,17 @@ RSpec.describe WebLogParser::Lib::Parser do
       file_path= Faker::File.file_name
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
-      cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+
       allow(File).to receive(:exist?).and_return true
       allow(File).to receive(:open).and_return ["/some_url #{Faker::Internet.ip_v4_address}"]
+      cli_parser = WebLogParser::Cli::Option::Parser.new(args)
       cli_parser.parse
+
       storage = WebLogParser::Lib::LogStorage.new
       allow(storage).to receive(:push).and_raise StandardError
       file_parser = WebLogParser::Lib::Parser.new(cli_parser.options, storage)
       file_parser.parse
+
       expect(storage.instance_variable_get(:@logs_data).empty?).to be true
     end
   end
