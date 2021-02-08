@@ -50,5 +50,8 @@ in memory, after parsing is finished, app retrieves ordered data from storage an
 ```
 as log files contain ip address we can extract more information based on ip
 like country where request was made from. Also we can add choice to provide output file
-location and store ordered data in this file instead of showing it in console
+location and store ordered data in this file instead of showing it in console.
+
+Also new validations for unexpected log entries may be added, like validation for correct ip address,
+validation for correct url type to exclude query params for example.
 ```
