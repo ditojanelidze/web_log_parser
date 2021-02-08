@@ -61,4 +61,26 @@ RSpec.describe WebLogParser::Lib::Parser do
       expect(storage.instance_variable_get(:@logs_data).empty?).to be true
     end
   end
+
+  context 'line validation' do
+    it 'validate line data' do
+      file_parser = WebLogParser::Lib::Parser.new(nil, nil)
+      expect(file_parser.send(:valid_line?, ["/some/rul", Faker::Internet.ip_v4_address], 1)).to eq true
+    end
+
+    it 'validate line data' do
+      file_parser = WebLogParser::Lib::Parser.new(nil, nil)
+      expect(file_parser.send(:valid_line?, ["/some/rul", Faker::Internet.ip_v6_address], 1)).to eq true
+    end
+
+    it 'validate line data' do
+      file_parser = WebLogParser::Lib::Parser.new(nil, nil)
+      expect(file_parser.send(:valid_line?, ["/some/rul", Faker::Quote.famous_last_words], 1)).to eq false
+    end
+
+    it 'validate line data' do
+      file_parser = WebLogParser::Lib::Parser.new(nil, nil)
+      expect(file_parser.send(:valid_line?, ["/some/rul"], 1)).to eq false
+    end
+  end
 end

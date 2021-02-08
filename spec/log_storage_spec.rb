@@ -45,6 +45,7 @@ RSpec.describe WebLogParser::Lib::LogStorage do
     ip_1 = Faker::Internet.ip_v4_address
     ip_2 = Faker::Internet.ip_v4_address
     ip_3 = Faker::Internet.ip_v4_address
+
     storage.push '/home', ip_1
     storage.push '/home', ip_2
 
