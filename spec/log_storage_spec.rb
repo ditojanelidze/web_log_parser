@@ -16,7 +16,8 @@ RSpec.describe WebLogParser::Lib::LogStorage do
     n.times { storage.push '/home', Faker::Internet.ip_v4_address }
     logs_data = storage.instance_variable_get(:@logs_data)
     expect(logs_data.count).to eq 1
-    expect(logs_data['/home'].nil?).to be false
+    expect(logs_data['/home'].ips.count).to eq n
+    expect(logs_data['/home'].requests_count).to eq n
   end
 
   it 'should save new entry' do

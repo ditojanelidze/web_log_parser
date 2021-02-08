@@ -11,6 +11,8 @@ RSpec.describe WebLogParser::Lib::Parser do
       file_path= Faker::File.file_name
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
+      allow(File).to receive(:exist?).and_return true
+      allow(File).to receive(:open).and_return ["/some_url #{Faker::Internet.ip_v4_address}"]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
       cli_parser.parse
       storage = WebLogParser::Lib::LogStorage.new
@@ -26,6 +28,7 @@ RSpec.describe WebLogParser::Lib::Parser do
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+      allow(File).to receive(:exist?).and_return true
       allow(File).to receive(:open).and_raise StandardError
       cli_parser.parse
       storage = WebLogParser::Lib::LogStorage.new
@@ -40,6 +43,7 @@ RSpec.describe WebLogParser::Lib::Parser do
       args = [options.sample, file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
       allow(File).to receive(:exist?).and_return true
+      allow(File).to receive(:open).and_return ["/some_url #{Faker::Internet.ip_v4_address}"]
       cli_parser.parse
       storage = WebLogParser::Lib::LogStorage.new
       allow(storage).to receive(:push).and_raise StandardError

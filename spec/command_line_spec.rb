@@ -9,6 +9,7 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
       file_path= Faker::File.file_name
       args = ['-f', file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+      allow(File).to receive(:exist?).and_return true
       cli_parser.parse
       expect(cli_parser.options[:type]).to eq :full
       expect(cli_parser.options[:file]).to eq file_path
@@ -18,6 +19,7 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
       file_path= Faker::File.file_name
       args = ['--full', file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+      allow(File).to receive(:exist?).and_return true
       cli_parser.parse
       expect(cli_parser.options[:type]).to eq :full
       expect(cli_parser.options[:file]).to eq file_path
@@ -27,6 +29,7 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
       file_path= Faker::File.file_name
       args = ['-r', file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+      allow(File).to receive(:exist?).and_return true
       cli_parser.parse
       expect(cli_parser.options[:type]).to eq :relative
       expect(cli_parser.options[:file]).to eq Dir.pwd.concat('/', file_path)
@@ -36,6 +39,7 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
       file_path= Faker::File.file_name
       args = ['--relative', file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
+      allow(File).to receive(:exist?).and_return true
       cli_parser.parse
       expect(cli_parser.options[:type]).to eq :relative
       expect(cli_parser.options[:file]).to eq Dir.pwd.concat('/', file_path)
@@ -45,14 +49,14 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
   context 'with unsuccessfully running arguments' do
     it 'should raise no arguments error' do
       cli_parser = WebLogParser::Cli::Option::Parser.new([])
-      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::CommandLineError
+      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::NoArguments
     end
 
     it 'should raise invalid option error' do
       file_path= Faker::File.file_name
       args = [Faker::String.random(length: rand(5..10)), file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
-      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::CommandLineError
+      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::UnknownOption
     end
 
     it 'should raise file not found error' do
@@ -60,13 +64,13 @@ RSpec.describe WebLogParser::Cli::Option::Parser do
       options = %w[-f --full -r --relative]
       args = [options.sample, file_path]
       cli_parser = WebLogParser::Cli::Option::Parser.new(args)
-      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::CommandLineError
+      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::FileNotFound
     end
 
     it 'should raise file parameter required error' do
       options = %w[-f --full -r --relative]
       cli_parser = WebLogParser::Cli::Option::Parser.new([options.sample])
-      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::CommandLineError
+      expect { cli_parser.parse }.to raise_error WebLogParser::Cli::Errors::ParameterRequired
     end
   end
 end
