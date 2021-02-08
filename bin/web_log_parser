@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../cli/command_line'
+require_relative '../lib/log_storage'
+require_relative '../lib/parser'
+
+begin
+  arg_parser = WebLogParser::Cli::Option::Parser.new(ARGV)
+  arg_parser.parse
+  options = arg_parser.options
+  storage = WebLogParser::Lib::LogStorage.new
+  parser = WebLogParser::Lib::Parser.new(options, storage)
+  parser.parse
+  puts 'list of webpages with most page views ordered from most pages views to less page views: '
+  puts storage.top_views
+  puts "\n" * 5
+  puts 'ordered unique page views: '
+  puts storage.top_unique_visitors
+rescue WebLogParser::Cli::Errors::CommandLineError => e
+  puts "ARGUMENT ERROR:  #{e.message}" if e.message
+  puts
+  puts 'Usage: web-log-parser [FILE NAME] <OPTIONS>'
+  puts
+  puts 'Input options:'
+  puts '  --full, -f          passing full file path'
+  puts '  --relative, -r      passing relative file path'
+  puts
+  puts 'Examples:'
+  puts '  web-log-parser --full     /var/log/nginx/access.log'
+  puts '  web-log-parser --f        /var/log/nginx/access.log'
+  puts '  web-log-parser -r         production.log'
+  puts '  web-log-parser --relative production.log'
+  exit(0)
+rescue StandardError => e
+  puts "Unexpected error occurred - #{e.message}"
+  puts "Error Backtrace - #{e.backtrace&.join("\n")}" if e.backtrace
+  puts 'Please contact at john.doe@gmail.com'
+  exit(0)
+end
